@@ -14,7 +14,7 @@ It will iteratively blastx the transcripts against swiss_prot, swiss_trembl, ref
 - run `` python annotator.py `` once, this will generate a default config file in yaml;
 - run again using parameters, -h might help with which could be modified;
 
-## logic
+## Logic
 
   it will use diamond to first blastx the query to the swiss-prot file, get the hit; left fasta transcript will subject to blastx to swiss-trembl, get the hit; and then left ones to uniref90; then all transcripts will be translated deduced by transdecoder, put the proteins into pfam search to scan the domains.
 
@@ -26,19 +26,27 @@ It will iteratively blastx the transcripts against swiss_prot, swiss_trembl, ref
 
   All large files were analysed in a way by seperated small trunks in case of memory problems.
 
-## database link
+## Database link
 
-swissprotDB: ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz
-swissprotDBDAT: ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz
-tremblDB: ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.fasta.gz
-tremblDBDAT: ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.dat.gz
-GODB: ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/idmapping_selected.tab.gz
-ncRNADB: ftp://ftp.ebi.ac.uk/pub/databases/RNAcentral/current_release/sequences/rnacentral_active.fasta.gz
-unirefDB: ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/uniref/uniref90/uniref90.fasta.gz
-unirefDBDAT: ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/uniref/uniref90/uniref90.dat.gz
-pfam2GO: http://geneontology.org/external2go/pfam2go
+swissprotDB: [ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz](ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz) 
 
-## software
+swissprotDBDAT: [ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz](ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz) 
+
+tremblDB: [ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.fasta.gz](ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.fasta.gz)
+
+tremblDBDAT: [ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.dat.gz](ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.dat.gz)
+
+GODB: [ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/idmapping_selected.tab.gz](ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/idmapping_selected.tab.gz) 
+
+ncRNADB: [ftp://ftp.ebi.ac.uk/pub/databases/RNAcentral/current_release/sequences/rnacentral_active.fasta.gz](ftp://ftp.ebi.ac.uk/pub/databases/RNAcentral/current_release/sequences/rnacentral_active.fasta.gz ) 
+
+unirefDB: [ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/uniref/uniref90/uniref90.fasta.gz](ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/uniref/uniref90/uniref90.fasta.gz) 
+
+unirefDBDAT: [ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/uniref/uniref90/uniref90.dat.gz](ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/uniref/uniref90/uniref90.dat.gz) 
+
+pfam2GO: [http://geneontology.org/external2go/pfam2go](http://geneontology.org/external2go/pfam2go)
+
+## Software
 
 python=3.9
 diamond
