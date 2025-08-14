@@ -42,6 +42,11 @@ workflow {
 
     // Step 1.3: Run other protein annotations in parallel on ALL predicted proteins
     INTERPROSCAN(TRANSDECODER.out.pep)
+    //TRANSDECODER.out.pep
+    //    .splitFasta(by: 5000, file: true)
+    //    .set { ch_split_pep }
+    //INTERPROSCAN(ch_split_pep) 
+    
     EGGNOG_MAPPER(TRANSDECODER.out.pep)
     
     // Step 1.4: Annotate non-coding candidates
@@ -83,7 +88,7 @@ process TRANSDECODER {
         """
         TransDecoder.LongOrfs -t ${fasta} -m ${params.transdecoder_min_len}
         TransDecoder.Predict -t ${fasta} --single_best_only
-        grep '^>' ${base}.transdecoder.pep | sed 's/>//' | cut -d ' ' -f 1 | sed 's/\\.p[0-9]*\$//' | sort -u > coding_ids.txt
+        grep '^>' ${base}.transdecoder.pep | sed 's/>//' | cut -d ' ' -f 1 | sed -E 's/\.p[0-9]+.*//g' | sort -u > coding_ids.txt
         grep '^>' ${fasta} | sed 's/>//' | sort -u > all_query_ids.txt
         grep -v -w -F -f coding_ids.txt all_query_ids.txt > ncrna_ids.txt
         seqtk subseq ${fasta} ncrna_ids.txt > ncrna_candidates.fasta
