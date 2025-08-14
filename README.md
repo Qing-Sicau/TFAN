@@ -1,59 +1,37 @@
-# TFAN
-Transcriptome sequence functional annotation
+# Gene Annotator Pro - Offline High-Precision Annotation System
 
-# Description
-This script was used to annotate transcript sequences in fasta format, either after genome annotation or assembly from RNA-seq reads
+This tool is a Nextflow-based pipeline designed for comprehensive, offline functional annotation of transcriptome sequences. It integrates state-of-the-art bioinformatics tools and databases to produce systematic, scientifically rigorous, and informative annotation results.
 
-It will iteratively blastx the transcripts against swiss_prot, swiss_trembl, refseq90, pfam domains, and retrive the corresponding descriptions as well as th go terms corresponding to the best hit.
+## Key Features
 
-## How to use
+-   **Fully Offline**: All analysis is performed without an internet connection once databases are prepared.
+-   **Automated Preprocessing**: The pipeline automatically builds all necessary database indexes from user-provided raw files.
+-   **Updatable Databases**: A simple command-line flag allows for the forced regeneration of all prepared databases from new raw files.
+-   **Massively Parallel**: Designed to leverage multi-core servers and HPC clusters for maximum computational efficiency.
+-   **Reproducible**: Utilizes Conda for strict software version management, ensuring scientific reproducibility.
+-   **Intelligent Integration**: Employs a DuckDB backend for high-performance data integration, using a priority-based rule system to generate a final, human-readable report.
 
-- first, download corresponding data into a directory using either your favrate tool;
-- put them into a directory;
-- install necessary tools using conda, or your way;
-- run `` python annotator.py `` once, this will generate a default config file in yaml;
-- run again using parameters, -h might help with which could be modified;
+## Phase 1: Setup & Configuration
 
-## Logic
+Before the first run, please complete the following setup.
 
-  it will use diamond to first blastx the query to the swiss-prot file, get the hit; left fasta transcript will subject to blastx to swiss-trembl, get the hit; and then left ones to uniref90; then all transcripts will be translated deduced by transdecoder, put the proteins into pfam search to scan the domains.
+### 1. Install Prerequisites
 
-  Finally, all hits were parsed, using the AC number to retrieve the GO id from idmapping file of Uniprot, extract the Description of the protein from the corresponding dat file from uniprot, and pfam hit to the corresponding GO terms. All GO terms were combined, deplicates removed. 
-  
-  The left ones were blast to ncRNA database, to note as whether nc or c.
-  
-  These results were piped into a duckdb database for final outputs avoiding mysql issues.
+You must have `Conda` (or preferably `Mamba` for speed) and `Nextflow` installed.
 
-  All large files were analysed in a way by seperated small trunks in case of memory problems.
+```bash
+# Install Mamba (recommended for faster environment creation)
+conda install -n base -c conda-forge mamba
 
-## Database link
+# Install Nextflow
+mamba create -n nextflow -c bioconda nextflow
 
-swissprotDB: [ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz](ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz) 
+```
 
-swissprotDBDAT: [ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz](ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz) 
+# Ensure you are in the 'nextflow' conda environment
+conda activate nextflow
 
-tremblDB: [ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.fasta.gz](ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.fasta.gz)
-
-tremblDBDAT: [ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.dat.gz](ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.dat.gz)
-
-GODB: [ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/idmapping_selected.tab.gz](ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/idmapping_selected.tab.gz) 
-
-ncRNADB: [ftp://ftp.ebi.ac.uk/pub/databases/RNAcentral/current_release/sequences/rnacentral_active.fasta.gz](ftp://ftp.ebi.ac.uk/pub/databases/RNAcentral/current_release/sequences/rnacentral_active.fasta.gz ) 
-
-unirefDB: [ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/uniref/uniref90/uniref90.fasta.gz](ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/uniref/uniref90/uniref90.fasta.gz) 
-
-unirefDBDAT: [ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/uniref/uniref90/uniref90.dat.gz](ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/uniref/uniref90/uniref90.dat.gz) 
-
-pfam2GO: [http://geneontology.org/external2go/pfam2go](http://geneontology.org/external2go/pfam2go)
-
-## Software
-
-python=3.9
-diamond
-blast
-transdecoder
-fastparquet
-duckdb
-pyarrow
-dask
-hmmer
+# Run the main pipeline
+# The --input flag is required
+# nextflow run main.nf -profile standard --input /path/to/your/transcripts.fasta --update_db
+nextflow run main.nf -profile standard --input transcript.fasta 
