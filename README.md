@@ -26,8 +26,6 @@ conda install -n base -c conda-forge mamba
 # Install Nextflow
 mamba create -n nextflow -c bioconda nextflow
 
-```
-
 # Ensure you are in the 'nextflow' conda environment
 conda activate nextflow
 
@@ -35,3 +33,33 @@ conda activate nextflow
 # The --input flag is required
 # nextflow run main.nf -profile standard --input /path/to/your/transcripts.fasta --update_db
 nextflow run main.nf -profile standard --input transcript.fasta 
+
+# tree str
+#.
+#├── bin
+#│   └── integrate_results.py
+#├── database_prep.sh
+#├── main.nf
+#├── nextflow.config
+#├── raw_database
+#│   ├── eggnog_db
+#│   ├── interproscan-5.75-106.0
+#│   ├── interproscan-5.75-106.0-64-bit.tar.gz
+#│   ├── interproscan-5.75-106.0-64-bit.tar.gz.md5
+#│   ├── Pfam-A.clans.tsv.gz
+#│   ├── Pfam-A.hmm.gz
+#│   ├── Rfam.clanin
+#│   ├── Rfam.cm
+#│   ├── Rfam.cm.gz
+#│   ├── Rfam.cm.i1f
+#│   ├── Rfam.cm.i1i
+#│   ├── Rfam.cm.i1m
+#│   ├── Rfam.cm.i1p
+#│   ├── uniprot_sprot.dmnd
+#│   ├── uniprot_sprot.fasta.gz
+#│   ├── uniprot_trembl.dmnd
+#│   ├── uniprot_trembl.fasta.gz
+#│   ├── uniref90.dmnd
+#│   └── uniref90.fasta.gz
+#├── README.md
+#├── software_inst.sh
