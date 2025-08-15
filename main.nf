@@ -76,23 +76,40 @@ workflow {
 
 process TRANSDECODER {
     label 'medium_cpu'
-    publishDir "${params.outdir}/1_transdecoder", mode: 'copy', pattern: '*.{pep,fasta,txt}'
-//    conda 'bioconda::transdecoder=5.7.0 bioconda::seqtk'
-    input: path fasta
+    publishDir "${params.outdir}/1_transdecoder", mode: 'copy', pattern: '*.{pep,cds,gff3,fasta,txt}'
+    conda 'bioconda::transdecoder=5.7.0 bioconda::seqtk'
+
+    input:
+    path fasta
+
     output:
-        path("*.transdecoder.pep"), emit: pep
-        path("ncrna_candidates.fasta"), emit: ncrna_candidates
-        path("all_query_ids.txt"), emit: all_ids
+    path("*.transdecoder.pep"), emit: pep
+    path("*.transdecoder.cds"), emit: cds
+    path("*.transdecoder.gff3"), emit: gff3
+    path("ncrna_candidates.fasta"), emit: ncrna_candidates
+    path("all_query_ids.txt"), emit: all_ids
+
     script:
-        def base = fasta.baseName
-        """
-        TransDecoder.LongOrfs -t ${fasta} -m ${params.transdecoder_min_len}
-        TransDecoder.Predict -t ${fasta} --single_best_only
-        grep '^>' ${base}.transdecoder.pep | sed 's/>//' | cut -d ' ' -f 1 | sed -E 's/\.p[0-9]+.*//g' | sort -u > coding_ids.txt
-        grep '^>' ${fasta} | sed 's/>//' | sort -u > all_query_ids.txt
-        grep -v -w -F -f coding_ids.txt all_query_ids.txt > ncrna_ids.txt
-        seqtk subseq ${fasta} ncrna_ids.txt > ncrna_candidates.fasta
-        """
+    def base = fasta.baseName
+    """
+    # Step 1 & 2: Run TransDecoder
+    TransDecoder.LongOrfs -t ${fasta} -m ${params.transdecoder_min_len}
+    TransDecoder.Predict -t ${fasta} --single_best_only
+
+    # Step 3: Extract and CLEAN IDs for downstream filtering (Final Corrected Version)
+
+    # Get all original query IDs, taking only the ID part before any space.
+    grep '^>' ${fasta} | sed 's/>//' | cut -d ' ' -f 1 | sort -u > all_query_ids.txt
+
+    # Get predicted protein IDs and remove the ".pX" suffix using the robust sed command.
+    grep '^>' "${base}.transdecoder.pep" | sed 's/>//' | cut -d ' ' -f 1 | sed -E 's/\\.p[0-9]+\$//' | sort -u > coding_ids.txt
+
+    # Find non-coding IDs by comparing the two clean ID lists.
+    grep -v -w -F -f coding_ids.txt all_query_ids.txt > ncrna_ids.txt
+
+    # Extract the FASTA sequences for these non-coding candidates.
+    seqtk subseq ${fasta} ncrna_ids.txt > ncrna_candidates.fasta
+    """
 }
 
 process DIAMOND_SPROT {
