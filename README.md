@@ -63,3 +63,13 @@ nextflow run main.nf -profile standard --input transcript.fasta
 #│   └── uniref90.fasta.gz
 #├── README.md
 #├── software_inst.sh
+```
+# Run the main pipeline
+```
+# Ensure you are in the 'nextflow' conda environment
+conda activate nextflow
+
+# Run the main pipeline
+# The --input flag is required
+# nextflow run main.nf -profile standard --input /path/to/your/transcripts.fasta --update_db
+nextflow run main.nf -profile standard --input transcript.fasta 
