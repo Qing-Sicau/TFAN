@@ -102,7 +102,7 @@ process TRANSDECODER {
     grep '^>' ${fasta} | sed 's/>//' | cut -d ' ' -f 1 | sort -u > all_query_ids.txt
 
     # Get predicted protein IDs and remove the ".pX" suffix using the robust sed command.
-    grep '^>' "${base}.transdecoder.pep" | sed 's/>//' | cut -d ' ' -f 1 | sed -E 's/\\.p[0-9]+\$//' | sort -u > coding_ids.txt
+    grep '^>' "${fasta}.transdecoder.pep" | sed 's/>//' | cut -d ' ' -f 1 | sed -E 's/\\.p[0-9]+\$//' | sort -u > coding_ids.txt
 
     # Find non-coding IDs by comparing the two clean ID lists.
     grep -v -w -F -f coding_ids.txt all_query_ids.txt > ncrna_ids.txt
